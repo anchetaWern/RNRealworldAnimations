@@ -7,13 +7,13 @@ export default class BigCard extends Component<Props> {
   constructor(props) {
     super(props);
     this.imageOpacityValue = new Animated.Value(0);
-    this.titleTranslateXValue = new Animated.Value(0);
+    this.titleTranslateYValue = new Animated.Value(0);
     this.titleScaleValue = new Animated.Value(0);
   }
 
   componentDidUpdate() {
     this.imageOpacityValue.setValue(0);
-    this.titleTranslateXValue.setValue(0);
+    this.titleTranslateYValue.setValue(0);
     this.titleScaleValue.setValue(0);
 
     Animated.sequence([
@@ -22,7 +22,7 @@ export default class BigCard extends Component<Props> {
         duration: 1000,
         easing: Easing.linear
       }),
-      Animated.timing(this.titleTranslateXValue, {
+      Animated.timing(this.titleTranslateYValue, {
         toValue: 1,
         duration: 300,
         easing: Easing.linear
@@ -47,7 +47,7 @@ export default class BigCard extends Component<Props> {
       opacity: imageOpacity
     };
 
-    const titleMoveY = this.titleTranslateXValue.interpolate({
+    const titleMoveY = this.titleTranslateYValue.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 280]
     });
