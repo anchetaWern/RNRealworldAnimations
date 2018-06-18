@@ -32,7 +32,7 @@ const Card = ({
         Animated.timing(scaleValue, {
           toValue: 1,
           duration: 250,
-          easing: Easing.easeInSine,
+          easing: Easing.linear,
           useNativeDriver: true
         }).start();
 
@@ -42,7 +42,7 @@ const Card = ({
         Animated.timing(scaleValue, {
           toValue: 0,
           duration: 100,
-          easing: Easing.easeInOutSine,
+          easing: Easing.linear,
           useNativeDriver: true
         }).start();
       }}
