@@ -31,7 +31,7 @@ const AnimatedHeader = ({ title, nativeScrollY }) => {
 
     const titleTranslateY = nativeScrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-      outputRange: [25, 35, 15],
+      outputRange: [0, -10, -8],
       extrapolate: "clamp"
     });
 

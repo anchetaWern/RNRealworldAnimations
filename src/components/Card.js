@@ -48,7 +48,11 @@ const Card = ({
       }}
     >
       <Animated.View style={transformStyle}>
-        <Image source={item.pic} style={styles.thumbnail} />
+        <Image
+          source={item.pic}
+          style={styles.thumbnail}
+          resizeMode="contain"
+        />
         <Text style={styles.name}>{item.name}</Text>
         <View style={styles.icons}>
           <IconButton
@@ -59,7 +63,13 @@ const Card = ({
             data={item}
           />
           <IconButton icon="bookmark" onPress={bookmarkAction} data={item} />
-          <IconButton icon="share" onPress={shareAction} data={item} />
+          <IconButton
+            icon="share"
+            onPress={() => {
+              shareAction(item.name, item.full_pic);
+            }}
+            data={item}
+          />
         </View>
       </Animated.View>
     </TouchableWithoutFeedback>
