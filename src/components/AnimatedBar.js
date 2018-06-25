@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Animated } from "react-native";
+import { Animated } from "react-native";
 
 type Props = {};
 export default class AnimatedBar extends Component<Props> {
