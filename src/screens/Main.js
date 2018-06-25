@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Platform, Animated } from "react-native";
+import {
+  View,
+  Platform,
+  Animated,
+  LayoutAnimation,
+  UIManager
+} from "react-native";
 
 import pokemon from "../data/pokemon";
 import pokemon_stats from "../data/pokemon-stats";
@@ -7,9 +13,24 @@ import pokemon_stats from "../data/pokemon-stats";
 import AnimatedHeader from "../components/AnimatedHeader";
 import CardList from "../components/CardList";
 
-import { HEADER_MAX_HEIGHT } from "../settings/layout";
+import { HEADER_MAX_HEIGHT } from "../settings/layout.js";
 
-import { getRandomInt } from "../lib/random";
+import { getRandomInt, shuffleArray } from "../lib/random";
+
+const springAnimationProperties = {
+  type: LayoutAnimation.Types.spring,
+  springDamping: 0.3,
+  property: LayoutAnimation.Properties.scaleXY
+};
+
+const animationConfig = {
+  duration: 500,
+  create: springAnimationProperties
+};
+
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 type Props = {};
 export default class Main extends Component<Props> {
@@ -25,6 +46,10 @@ export default class Main extends Component<Props> {
         color: "#FFF"
       }
     };
+  };
+
+  state = {
+    pokemon: pokemon
   };
 
   constructor(props) {
@@ -76,25 +101,39 @@ export default class Main extends Component<Props> {
 
     return (
       <View style={styles.container}>
-        <AnimatedHeader title={"Poke-Gallery"} nativeScrollY={nativeScrollY} />
-        {this.nativeScrollY && (
-          <CardList
-            data={pokemon}
-            cardAction={this.cardAction}
-            viewAction={this.viewAction}
-            bookmarkAction={this.bookmarkAction}
-            shareAction={this.shareAction}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: this.nativeScrollY } } }],
-              {
-                useNativeDriver: true
-              }
-            )}
-          />
-        )}
+        <AnimatedHeader
+          title={"Poke-Gallery"}
+          nativeScrollY={nativeScrollY}
+          onPress={this.shuffleData}
+        />
+
+        {this.state.pokemon &&
+          this.nativeScrollY && (
+            <CardList
+              data={this.state.pokemon}
+              cardAction={this.cardAction}
+              viewAction={this.viewAction}
+              bookmarkAction={this.bookmarkAction}
+              shareAction={this.shareAction}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: this.nativeScrollY } } }],
+                {
+                  useNativeDriver: true
+                }
+              )}
+            />
+          )}
       </View>
     );
   }
+
+  shuffleData = () => {
+    LayoutAnimation.configureNext(animationConfig);
+    let newArray = shuffleArray(this.state.pokemon);
+    this.setState({
+      pokemon: newArray
+    });
+  };
 }
 
 const styles = {

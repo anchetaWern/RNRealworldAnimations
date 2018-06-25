@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, Animated, Platform } from "react-native";
+import { View, Text, Animated, Platform, TouchableOpacity } from "react-native";
 
 import { HEADER_MAX_HEIGHT, HEADER_SCROLL_DISTANCE } from "../settings/layout";
 
-const AnimatedHeader = ({ title, nativeScrollY }) => {
+const Header = ({ title, nativeScrollY, onPress }) => {
+  console.log("os: ", Platform.OS);
   if (nativeScrollY) {
     const headerTranslate = nativeScrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -60,7 +61,9 @@ const AnimatedHeader = ({ title, nativeScrollY }) => {
         </Animated.View>
 
         <Animated.View style={[styles.header_bar, headerBarStyles]}>
-          <Text style={styles.header_text}>{title}</Text>
+          <TouchableOpacity onPress={onPress}>
+            <Text style={styles.header_text}>{title}</Text>
+          </TouchableOpacity>
         </Animated.View>
       </View>
     );
@@ -110,7 +113,8 @@ const styles = {
     left: 0,
     right: 0,
     width: null,
-    height: HEADER_MAX_HEIGHT
+    height: HEADER_MAX_HEIGHT,
+    resizeMode: "cover"
   },
   header_text: {
     color: "#FFF",
@@ -119,4 +123,4 @@ const styles = {
   }
 };
 
-export default AnimatedHeader;
+export default Header;
