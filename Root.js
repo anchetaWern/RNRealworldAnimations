@@ -4,6 +4,7 @@ import { createStackNavigator } from "react-navigation";
 
 import MainScreen from "./src/screens/Main";
 import ShareScreen from "./src/screens/Share";
+import DetailsScreen from "./src/screens/Details";
 
 const transitionConfig = () => {
   return {
@@ -35,7 +36,8 @@ const transitionConfig = () => {
     }
   };
 };
-const RootStack = createStackNavigator(
+
+const MainStack = createStackNavigator(
   {
     Main: {
       screen: MainScreen
@@ -47,6 +49,21 @@ const RootStack = createStackNavigator(
   {
     initialRouteName: "Main",
     transitionConfig
+  }
+);
+
+const RootStack = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack
+    },
+    Details: {
+      screen: DetailsScreen
+    }
+  },
+  {
+    mode: "modal",
+    headerMode: "none"
   }
 );
 

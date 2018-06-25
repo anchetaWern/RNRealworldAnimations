@@ -6,19 +6,13 @@ import pokemon_stats from "../data/pokemon-stats";
 
 import AnimatedHeader from "../components/AnimatedHeader";
 import CardList from "../components/CardList";
-import AnimatedModal from "../components/AnimatedModal";
-import BigCard from "../components/BigCard";
 
-import { HEADER_MAX_HEIGHT } from "../settings/layout.js";
+import { HEADER_MAX_HEIGHT } from "../settings/layout";
 
 import { getRandomInt } from "../lib/random";
 
 type Props = {};
 export default class Main extends Component<Props> {
-  state = {
-    isModalVisible: false
-  };
-
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "",
@@ -43,11 +37,10 @@ export default class Main extends Component<Props> {
   cardAction = () => {};
 
   viewAction = (pokemon, image) => {
-    this.setState({
-      pokemon,
-      image,
-      stats: this.getPokemonStats(),
-      isModalVisible: true
+    this.props.navigation.navigate("Details", {
+      title: pokemon,
+      image: image,
+      data: this.getPokemonStats()
     });
   };
 
@@ -99,22 +92,6 @@ export default class Main extends Component<Props> {
             )}
           />
         )}
-
-        <AnimatedModal
-          title={"View Pokemon"}
-          visible={this.state.isModalVisible}
-          onClose={() => {
-            this.setState({
-              isModalVisible: false
-            });
-          }}
-        >
-          <BigCard
-            title={this.state.pokemon}
-            image={this.state.image}
-            data={this.state.stats}
-          />
-        </AnimatedModal>
       </View>
     );
   }

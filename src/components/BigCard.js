@@ -11,7 +11,7 @@ export default class BigCard extends Component<Props> {
     this.titleScaleValue = new Animated.Value(0);
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
     this.imageOpacityValue.setValue(0);
     this.titleTranslateYValue.setValue(0);
     this.titleScaleValue.setValue(0);
