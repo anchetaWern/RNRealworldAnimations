@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView, View, FlatList, Animated, Platform } from "react-native";
 import Card from "./Card";
+
 import { HEADER_MAX_HEIGHT } from "../settings/layout";
 
 const CardList = ({
@@ -9,22 +10,18 @@ const CardList = ({
   viewAction,
   bookmarkAction,
   shareAction,
-  onScroll
+  onScroll,
+  scrollEnabled,
+  toggleDropArea,
+  isDropArea,
+  targetDropArea,
+  removePokemon
 }) => {
   return (
-    <Animated.ScrollView
-      style={styles.scroll}
-      scrollEventThrottle={1}
-      onScroll={onScroll}
-      contentInset={{
-        top: HEADER_MAX_HEIGHT
-      }}
-      contentOffset={{
-        y: -HEADER_MAX_HEIGHT
-      }}
-    >
+    <ScrollView scrollEnabled={scrollEnabled}>
       <View style={[styles.scroll_container]}>
         <FlatList
+          scrollEnabled={false}
           data={data}
           renderItem={({ item }) => (
             <Card
@@ -33,13 +30,17 @@ const CardList = ({
               viewAction={viewAction}
               bookmarkAction={bookmarkAction}
               shareAction={shareAction}
+              toggleDropArea={toggleDropArea}
+              isDropArea={isDropArea}
+              targetDropArea={targetDropArea}
+              removePokemon={removePokemon}
             />
           )}
           keyExtractor={item => item.id}
           numColumns={2}
         />
       </View>
-    </Animated.ScrollView>
+    </ScrollView>
   );
 };
 

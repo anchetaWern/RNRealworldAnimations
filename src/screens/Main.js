@@ -10,10 +10,10 @@ import {
 import pokemon from "../data/pokemon";
 import pokemon_stats from "../data/pokemon-stats";
 
-import AnimatedHeader from "../components/AnimatedHeader";
 import CardList from "../components/CardList";
+import DropArea from "../components/DropArea";
 
-import { HEADER_MAX_HEIGHT } from "../settings/layout.js";
+import { HEADER_MAX_HEIGHT, DROPAREA_MARGIN } from "../settings/layout.js";
 
 import { getRandomInt, shuffleArray } from "../lib/random";
 
@@ -32,11 +32,16 @@ if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+let updated_pokemon = pokemon.map(item => {
+  item.isVisible = true;
+  return item;
+});
+
 type Props = {};
 export default class Main extends Component<Props> {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: "",
+      headerTitle: "Poke-Gallery",
       headerStyle: {
         elevation: 0,
         shadowOpacity: 0,
@@ -49,7 +54,8 @@ export default class Main extends Component<Props> {
   };
 
   state = {
-    pokemon: pokemon
+    pokemon: updated_pokemon,
+    isDropAreaVisible: false
   };
 
   constructor(props) {
@@ -101,12 +107,11 @@ export default class Main extends Component<Props> {
 
     return (
       <View style={styles.container}>
-        <AnimatedHeader
-          title={"Poke-Gallery"}
-          nativeScrollY={nativeScrollY}
-          onPress={this.shuffleData}
+        <DropArea
+          dropAreaIsVisible={this.state.isDropAreaVisible}
+          setDropAreaLayout={this.setDropAreaLayout}
+          isTargeted={this.state.isDropAreaTargeted}
         />
-
         {this.state.pokemon &&
           this.nativeScrollY && (
             <CardList
@@ -115,12 +120,18 @@ export default class Main extends Component<Props> {
               viewAction={this.viewAction}
               bookmarkAction={this.bookmarkAction}
               shareAction={this.shareAction}
+              scrollEnabled={!this.state.isDropAreaVisible}
               onScroll={Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.nativeScrollY } } }],
                 {
                   useNativeDriver: true
                 }
               )}
+              toggleDropArea={this.toggleDropArea}
+              dropAreaIsVisible={this.state.isDropAreaVisible}
+              isDropArea={this.isDropArea}
+              targetDropArea={this.targetDropArea}
+              removePokemon={this.removePokemon}
             />
           )}
       </View>
@@ -132,6 +143,60 @@ export default class Main extends Component<Props> {
     let newArray = shuffleArray(this.state.pokemon);
     this.setState({
       pokemon: newArray
+    });
+  };
+
+  toggleDropArea = (isVisible, item) => {
+    if (item) {
+      let pokemon_data = [...this.state.pokemon];
+      let new_pokemon_data = pokemon_data.map(item => {
+        item.isVisible = !isVisible;
+        return item;
+      });
+      let index = new_pokemon_data.findIndex(itm => itm.name == item.name);
+
+      if (isVisible) {
+        new_pokemon_data[index].isVisible = true;
+      }
+
+      this.setState({
+        isDropAreaVisible: isVisible,
+        pokemon: new_pokemon_data
+      });
+    }
+  };
+
+  setDropAreaLayout = event => {
+    this.setState({
+      dropAreaLayout: event.nativeEvent.layout
+    });
+  };
+
+  isDropArea = gesture => {
+    let dropbox = this.state.dropAreaLayout;
+    return (
+      gesture.moveY > dropbox.y + DROPAREA_MARGIN &&
+      gesture.moveY < dropbox.y + dropbox.height + DROPAREA_MARGIN &&
+      gesture.moveX > dropbox.x + DROPAREA_MARGIN &&
+      gesture.moveX < dropbox.x + dropbox.width + DROPAREA_MARGIN
+    );
+  };
+
+  targetDropArea = isTargeted => {
+    this.setState({
+      isDropAreaTargeted: isTargeted
+    });
+  };
+
+  removePokemon = item => {
+    let pokemon_data = [...this.state.pokemon];
+    let index = pokemon_data.findIndex(itm => itm.name == item.name);
+    pokemon_data.splice(index, 1);
+
+    LayoutAnimation.configureNext(animationConfig);
+
+    this.setState({
+      pokemon: pokemon_data
     });
   };
 }

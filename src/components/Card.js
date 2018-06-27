@@ -5,49 +5,129 @@ import {
   Image,
   TouchableWithoutFeedback,
   Animated,
-  Easing
+  Easing,
+  PanResponder
 } from "react-native";
 import IconButton from "./IconButton";
 
-const Card = ({
-  item,
-  cardAction,
-  viewAction,
-  bookmarkAction,
-  shareAction
-}) => {
-  let scaleValue = new Animated.Value(0);
+type Props = {};
+export default class Card extends Component<Props> {
+  constructor(props) {
+    super(props);
 
-  const cardScale = scaleValue.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [1, 1.1, 1.2]
-  });
+    this.pan = new Animated.ValueXY();
+    this.scaleValue = new Animated.Value(0);
+    this.opacityValue = new Animated.Value(2);
 
-  let transformStyle = { ...styles.card, transform: [{ scale: cardScale }] };
+    this.cardScale = this.scaleValue.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 0.5, 1]
+    });
 
-  return (
-    <TouchableWithoutFeedback
-      onPressIn={() => {
-        scaleValue.setValue(0);
-        Animated.timing(scaleValue, {
-          toValue: 1,
-          duration: 250,
-          easing: Easing.linear,
-          useNativeDriver: true
-        }).start();
+    this.cardOpacity = this.opacityValue.interpolate({
+      inputRange: [0, 1, 2],
+      outputRange: [0, 0.5, 1]
+    });
+  }
 
-        cardAction();
-      }}
-      onPressOut={() => {
-        Animated.timing(scaleValue, {
-          toValue: 0,
-          duration: 100,
-          easing: Easing.linear,
-          useNativeDriver: true
-        }).start();
-      }}
-    >
-      <Animated.View style={transformStyle}>
+  componentWillMount() {
+    const {
+      item,
+      toggleDropArea,
+      isDropArea,
+      targetDropArea,
+      removePokemon
+    } = this.props;
+
+    this._val = { x: 0, y: 0 };
+    this.pan.addListener(value => (this._val = value));
+
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onPanResponderGrant: (e, gestureState) => {
+        Animated.parallel([
+          Animated.timing(this.scaleValue, {
+            toValue: 0.5,
+            duration: 250,
+            easing: Easing.linear,
+            useNativeDriver: true
+          }),
+          Animated.timing(this.opacityValue, {
+            toValue: 1,
+            duration: 250,
+            easing: Easing.linear,
+            useNativeDriver: true
+          })
+        ]).start();
+
+        this.pan.setValue({ x: 0, y: 0 });
+        toggleDropArea(true, item);
+      },
+      onPanResponderMove: (e, gesture) => {
+        Animated.event([null, { dx: this.pan.x, dy: this.pan.y }])(e, gesture);
+        if (isDropArea(gesture)) {
+          targetDropArea(true);
+        } else {
+          targetDropArea(false);
+        }
+      },
+      onPanResponderRelease: (e, gesture) => {
+        toggleDropArea(false, item);
+
+        if (isDropArea(gesture)) {
+          Animated.timing(this.opacityValue, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true
+          }).start(() => {});
+
+          removePokemon(item);
+        } else {
+          Animated.parallel([
+            Animated.timing(this.scaleValue, {
+              toValue: 1,
+              duration: 250,
+              easing: Easing.linear,
+              useNativeDriver: true
+            }),
+            Animated.timing(this.opacityValue, {
+              toValue: 2,
+              duration: 250,
+              easing: Easing.linear,
+              useNativeDriver: true
+            }),
+            Animated.spring(this.pan, {
+              toValue: { x: 0, y: 0 },
+              friction: 5,
+              useNativeDriver: true
+            })
+          ]).start();
+        }
+      }
+    });
+  }
+
+  render() {
+    const {
+      item,
+      cardAction,
+      viewAction,
+      bookmarkAction,
+      shareAction
+    } = this.props;
+
+    let [translateX, translateY] = [this.pan.x, this.pan.y];
+
+    let transformStyle = {
+      ...styles.card,
+      opacity: item.isVisible ? this.cardOpacity : 0,
+      transform: [{ translateX }, { translateY }, { scale: this.cardScale }]
+    };
+
+    return (
+      <Animated.View style={transformStyle} {...this.panResponder.panHandlers}>
         <Image
           source={item.pic}
           style={styles.thumbnail}
@@ -72,9 +152,9 @@ const Card = ({
           />
         </View>
       </Animated.View>
-    </TouchableWithoutFeedback>
-  );
-};
+    );
+  }
+}
 
 const styles = {
   card: {
@@ -100,5 +180,3 @@ const styles = {
     justifyContent: "space-between"
   }
 };
-
-export default Card;
