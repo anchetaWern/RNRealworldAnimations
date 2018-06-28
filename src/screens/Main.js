@@ -12,6 +12,7 @@ import pokemon_stats from "../data/pokemon-stats";
 
 import CardList from "../components/CardList";
 import DropArea from "../components/DropArea";
+import IconButton from "../components/IconButton";
 
 import { HEADER_MAX_HEIGHT, DROPAREA_MARGIN } from "../settings/layout.js";
 
@@ -40,8 +41,17 @@ let updated_pokemon = pokemon.map(item => {
 type Props = {};
 export default class Main extends Component<Props> {
   static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
     return {
       headerTitle: "Poke-Gallery",
+      headerRight: (
+        <IconButton
+          icon="trash"
+          onPress={() => {
+            params.navigateToTrash();
+          }}
+        />
+      ),
       headerStyle: {
         elevation: 0,
         shadowOpacity: 0,
@@ -55,6 +65,7 @@ export default class Main extends Component<Props> {
 
   state = {
     pokemon: updated_pokemon,
+    removed_pokemon: [],
     isDropAreaVisible: false
   };
 
@@ -63,7 +74,17 @@ export default class Main extends Component<Props> {
     this.nativeScrollY = new Animated.Value(
       Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
     );
+
+    this.props.navigation.setParams({
+      navigateToTrash: this.navigateToTrash
+    });
   }
+
+  navigateToTrash = () => {
+    this.props.navigation.navigate("Trash", {
+      removed_pokemon: this.state.removed_pokemon
+    });
+  };
 
   cardAction = () => {};
 
@@ -190,13 +211,15 @@ export default class Main extends Component<Props> {
 
   removePokemon = item => {
     let pokemon_data = [...this.state.pokemon];
+    let removed_pokemon_data = [...this.state.removed_pokemon];
     let index = pokemon_data.findIndex(itm => itm.name == item.name);
-    pokemon_data.splice(index, 1);
-
+    let removed_pokemon = pokemon_data.splice(index, 1);
+    removed_pokemon_data.push(removed_pokemon[0]);
     LayoutAnimation.configureNext(animationConfig);
 
     this.setState({
-      pokemon: pokemon_data
+      pokemon: pokemon_data,
+      removed_pokemon: removed_pokemon_data
     });
   };
 }
