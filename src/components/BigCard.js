@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Animated, Easing } from "react-native";
 import DataRow from "./DataRow";
+import PinchableImage from "./PinchableImage";
 
 type Props = {};
 export default class BigCard extends Component<Props> {
@@ -49,7 +50,7 @@ export default class BigCard extends Component<Props> {
 
     const titleMoveY = this.titleTranslateYValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 280]
+      outputRange: [0, 310]
     });
 
     const titleScale = this.titleScaleValue.interpolate({
@@ -64,11 +65,7 @@ export default class BigCard extends Component<Props> {
     return (
       <View style={styles.container}>
         <View style={styles.mainContainer}>
-          <Animated.Image
-            source={image}
-            style={[styles.image, imageOpacityStyle]}
-            resizeMode={"contain"}
-          />
+          <PinchableImage image={image} />
           <Animated.View style={[styles.titleContainer, titleTransformStyle]}>
             <Text style={styles.title}>{title}</Text>
           </Animated.View>
@@ -110,10 +107,6 @@ const styles = {
     flex: 2,
     justifyContent: "flex-start",
     alignItems: "center"
-  },
-  image: {
-    width: 200,
-    height: 150
   },
   dataContainer: {
     flex: 2,

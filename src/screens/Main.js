@@ -141,7 +141,7 @@ export default class Main extends Component<Props> {
               viewAction={this.viewAction}
               bookmarkAction={this.bookmarkAction}
               shareAction={this.shareAction}
-              scrollEnabled={!this.state.isDropAreaVisible}
+              scrollEnabled={false}
               onScroll={Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.nativeScrollY } } }],
                 {
