@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Dimensions } from "react-native";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const DropArea = ({ dropAreaIsVisible, setDropAreaLayout, isTargeted }) => {
   const right = dropAreaIsVisible ? 20 : -200;

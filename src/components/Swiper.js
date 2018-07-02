@@ -1,12 +1,5 @@
-import React, { Component } from "react";
-import {
-  View,
-  Image,
-  Text,
-  Dimensions,
-  Animated,
-  PanResponder
-} from "react-native";
+import React from "react";
+import { Image, Text, Dimensions, Animated, PanResponder } from "react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -20,8 +13,8 @@ const Swiper = ({ item, dismissAction }) => {
   });
 
   let panResponder = PanResponder.create({
-    onMoveShouldSetResponderCapture: () => true,
-    onMoveShouldSetPanResponderCapture: () => true,
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (e, gesture) => {
       Animated.event([null, { dx: translateX }])(e, gesture);
       Animated.timing(opacityValue, {

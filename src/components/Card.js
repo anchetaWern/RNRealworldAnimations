@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  TouchableWithoutFeedback,
   Animated,
   Easing,
   PanResponder
@@ -39,13 +38,9 @@ export default class Card extends Component<Props> {
       removePokemon
     } = this.props;
 
-    this._val = { x: 0, y: 0 };
-    this.pan.addListener(value => (this._val = value));
-
     this.panResponder = PanResponder.create({
-      onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: (e, gestureState) => {
         Animated.parallel([
           Animated.timing(this.scaleValue, {

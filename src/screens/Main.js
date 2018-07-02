@@ -14,7 +14,7 @@ import CardList from "../components/CardList";
 import DropArea from "../components/DropArea";
 import IconButton from "../components/IconButton";
 
-import { HEADER_MAX_HEIGHT, DROPAREA_MARGIN } from "../settings/layout.js";
+import { DROPAREA_MARGIN } from "../settings/layout";
 
 import { getRandomInt, shuffleArray } from "../lib/random";
 
@@ -71,9 +71,6 @@ export default class Main extends Component<Props> {
 
   constructor(props) {
     super(props);
-    this.nativeScrollY = new Animated.Value(
-      Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
-    );
 
     this.props.navigation.setParams({
       navigateToTrash: this.navigateToTrash
@@ -121,11 +118,6 @@ export default class Main extends Component<Props> {
   };
 
   render() {
-    let nativeScrollY = Animated.add(
-      this.nativeScrollY,
-      Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
-    );
-
     return (
       <View style={styles.container}>
         <DropArea
@@ -133,28 +125,21 @@ export default class Main extends Component<Props> {
           setDropAreaLayout={this.setDropAreaLayout}
           isTargeted={this.state.isDropAreaTargeted}
         />
-        {this.state.pokemon &&
-          this.nativeScrollY && (
-            <CardList
-              data={this.state.pokemon}
-              cardAction={this.cardAction}
-              viewAction={this.viewAction}
-              bookmarkAction={this.bookmarkAction}
-              shareAction={this.shareAction}
-              scrollEnabled={false}
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { y: this.nativeScrollY } } }],
-                {
-                  useNativeDriver: true
-                }
-              )}
-              toggleDropArea={this.toggleDropArea}
-              dropAreaIsVisible={this.state.isDropAreaVisible}
-              isDropArea={this.isDropArea}
-              targetDropArea={this.targetDropArea}
-              removePokemon={this.removePokemon}
-            />
-          )}
+        {this.state.pokemon && (
+          <CardList
+            data={this.state.pokemon}
+            cardAction={this.cardAction}
+            viewAction={this.viewAction}
+            bookmarkAction={this.bookmarkAction}
+            shareAction={this.shareAction}
+            scrollEnabled={!this.state.isDropAreaVisible}
+            toggleDropArea={this.toggleDropArea}
+            dropAreaIsVisible={this.state.isDropAreaVisible}
+            isDropArea={this.isDropArea}
+            targetDropArea={this.targetDropArea}
+            removePokemon={this.removePokemon}
+          />
+        )}
       </View>
     );
   }

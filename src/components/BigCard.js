@@ -7,22 +7,15 @@ type Props = {};
 export default class BigCard extends Component<Props> {
   constructor(props) {
     super(props);
-    this.imageOpacityValue = new Animated.Value(0);
     this.titleTranslateYValue = new Animated.Value(0);
     this.titleScaleValue = new Animated.Value(0);
   }
 
   componentDidMount() {
-    this.imageOpacityValue.setValue(0);
     this.titleTranslateYValue.setValue(0);
     this.titleScaleValue.setValue(0);
 
     Animated.sequence([
-      Animated.timing(this.imageOpacityValue, {
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.linear
-      }),
       Animated.timing(this.titleTranslateYValue, {
         toValue: 1,
         duration: 300,
@@ -38,15 +31,6 @@ export default class BigCard extends Component<Props> {
 
   render() {
     const { image, title, data } = this.props;
-
-    const imageOpacity = this.imageOpacityValue.interpolate({
-      inputRange: [0, 0.25, 0.5, 0.75, 1],
-      outputRange: [0, 0.25, 0.5, 0.75, 1]
-    });
-
-    const imageOpacityStyle = {
-      opacity: imageOpacity
-    };
 
     const titleMoveY = this.titleTranslateYValue.interpolate({
       inputRange: [0, 1],

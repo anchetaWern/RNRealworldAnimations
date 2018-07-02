@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Animated, View, Text, Alert } from "react-native";
+import { Animated, View } from "react-native";
 import { PinchGestureHandler, State } from "react-native-gesture-handler";
 
 export default class PinchableImage extends Component {
