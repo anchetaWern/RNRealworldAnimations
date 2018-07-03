@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, Animated, Easing } from "react-native";
+import { View, Text, Animated, Easing, Dimensions } from "react-native";
 import DataRow from "./DataRow";
 import PinchableImage from "./PinchableImage";
+
+const { height } = Dimensions.get("window");
 
 type Props = {};
 export default class BigCard extends Component<Props> {
@@ -34,7 +36,7 @@ export default class BigCard extends Component<Props> {
 
     const titleMoveY = this.titleTranslateYValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 450]
+      outputRange: [0, height / 2]
     });
 
     const titleScale = this.titleScaleValue.interpolate({
