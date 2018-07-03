@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Animated, View } from "react-native";
+import { Animated, View, Dimensions } from "react-native";
 import { PinchGestureHandler, State } from "react-native-gesture-handler";
+
+const { width } = Dimensions.get("window");
 
 export default class PinchableImage extends Component {
   constructor(props) {
@@ -56,16 +58,15 @@ export default class PinchableImage extends Component {
         onHandlerStateChange={this._onPinchHandlerStateChange}
       >
         <View style={styles.container}>
-          <Animated.Image
-            resizeMode={"contain"}
-            source={this.props.image}
-            style={[
-              styles.pinchableImage,
-              {
+          <View style={styles.imageContainer}>
+            <Animated.Image
+              resizeMode={"cover"}
+              source={this.props.image}
+              style={{
                 transform: [{ scale: this.scale }]
-              }
-            ]}
-          />
+              }}
+            />
+          </View>
         </View>
       </PinchGestureHandler>
     );
@@ -76,8 +77,10 @@ const styles = {
   container: {
     flex: 1
   },
-  pinchableImage: {
-    width: 200,
-    height: 200
+  imageContainer: {
+    width: width,
+    height: 200,
+    overflow: "visible",
+    alignItems: "center"
   }
 };
