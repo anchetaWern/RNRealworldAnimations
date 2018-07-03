@@ -34,7 +34,7 @@ export default class BigCard extends Component<Props> {
 
     const titleMoveY = this.titleTranslateYValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 310]
+      outputRange: [0, 450]
     });
 
     const titleScale = this.titleScaleValue.interpolate({
