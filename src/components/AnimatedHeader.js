@@ -3,8 +3,7 @@ import { View, Text, Animated, Platform, TouchableOpacity } from "react-native";
 
 import { HEADER_MAX_HEIGHT, HEADER_SCROLL_DISTANCE } from "../settings/layout";
 
-const Header = ({ title, nativeScrollY, onPress }) => {
-  console.log("os: ", Platform.OS);
+const AnimatedHeader = ({ title, nativeScrollY, onPress }) => {
   if (nativeScrollY) {
     const headerTranslate = nativeScrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -123,4 +122,4 @@ const styles = {
   }
 };
 
-export default Header;
+export default AnimatedHeader;
