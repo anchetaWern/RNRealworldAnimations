@@ -4,6 +4,8 @@ A sample React Native app showing how to implement different kinds of animations
 
 This branch contains the final output for the part 1 of the React Native Animations tutorial series.
 
+Full tutorial is available at: [https://blog.pusher.com/animation-react-native-part-3/](https://blog.pusher.com/animation-react-native-part-3/)
+
 _Note: the React Native code in this repo may be a little bit outdated and won't run immediately after you've followed the setup instructions. Be sure to refactor the code to use the more recent React Native syntax if it doesn't run for you._
 
 ## Prerequisites
